@@ -42,8 +42,11 @@ export function MeetAleahVideo() {
   const [playing, setPlaying] = useState(true);
   const [soundEnabled, setSoundEnabled] = useState(false);
   const [activeClipIndex, setActiveClipIndex] = useState(0);
+  const [slideDirection, setSlideDirection] = useState<'next' | 'previous'>('next');
   const activeClip = meetAleahClips[activeClipIndex];
   const hasMultipleClips = meetAleahClips.length > 1;
+  const activeSlideNumber = String(activeClipIndex + 1).padStart(2, '0');
+  const totalSlideNumber = String(meetAleahClips.length).padStart(2, '0');
 
   useEffect(() => {
     const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -133,8 +136,13 @@ export function MeetAleahVideo() {
     if (!hasMultipleClips) return;
 
     const video = videoRef.current;
+    const normalizedIndex = (nextIndex + meetAleahClips.length) % meetAleahClips.length;
+
+    if (normalizedIndex === activeClipIndex) return;
+
     video?.pause();
-    setActiveClipIndex((nextIndex + meetAleahClips.length) % meetAleahClips.length);
+    setSlideDirection(normalizedIndex > activeClipIndex || (activeClipIndex === meetAleahClips.length - 1 && normalizedIndex === 0) ? 'next' : 'previous');
+    setActiveClipIndex(normalizedIndex);
     setPlaying(true);
   }
 
@@ -170,6 +178,29 @@ export function MeetAleahVideo() {
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
     >
+      <style>
+        {`
+          @keyframes roseSlideNext {
+            from { opacity: 0.7; transform: translateX(12%); }
+            to { opacity: 1; transform: translateX(0); }
+          }
+
+          @keyframes roseSlidePrevious {
+            from { opacity: 0.7; transform: translateX(-12%); }
+            to { opacity: 1; transform: translateX(0); }
+          }
+
+          @media (prefers-reduced-motion: no-preference) {
+            .rose-slide-next {
+              animation: roseSlideNext 420ms ease both;
+            }
+
+            .rose-slide-previous {
+              animation: roseSlidePrevious 420ms ease both;
+            }
+          }
+        `}
+      </style>
       <div className="aspect-[9/16] overflow-hidden rounded-lg bg-roseWine">
         {reducedMotion ? (
           // eslint-disable-next-line @next/next/no-img-element
@@ -182,7 +213,7 @@ export function MeetAleahVideo() {
           <video
             key={activeClip.src}
             ref={videoRef}
-            className="h-full w-full object-cover object-center transition-opacity duration-500"
+            className={`h-full w-full object-cover object-center ${slideDirection === 'next' ? 'rose-slide-next' : 'rose-slide-previous'}`}
             src={activeClip.src}
             poster={activeClip.poster}
             autoPlay
@@ -196,11 +227,59 @@ export function MeetAleahVideo() {
         )}
       </div>
       <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,transparent_58%,rgba(7,5,5,0.72))]" />
+      {hasMultipleClips ? (
+        <>
+          <div className="pointer-events-none absolute left-2 right-2 top-2 z-10 md:left-4 md:right-4 md:top-4">
+            <div className="grid grid-cols-4 gap-1.5">
+              {meetAleahClips.map((clip, index) => (
+                <div key={clip.src} className="h-0.5 overflow-hidden rounded-full bg-roseCream/25">
+                  <div
+                    className={`h-full rounded-full transition-all duration-300 ${
+                      index === activeClipIndex
+                        ? 'w-full bg-roseGold'
+                        : index < activeClipIndex
+                          ? 'w-full bg-roseCream/55'
+                          : 'w-0 bg-roseGold/40'
+                    }`}
+                  />
+                </div>
+              ))}
+            </div>
+            <div className="mt-2 inline-flex rounded-full border border-roseGold/25 bg-roseBlack/65 px-2 py-1 text-[8px] font-black uppercase tracking-[0.14em] text-roseCream backdrop-blur md:text-[10px]">
+              <span className="text-roseGold">{activeSlideNumber}</span>
+              <span className="mx-1 text-roseCream/55">/</span>
+              <span>{totalSlideNumber}</span>
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={() => goToClip(activeClipIndex - 1)}
+            className="absolute bottom-14 left-0 top-14 z-10 w-1/2 cursor-pointer bg-transparent focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-roseGold"
+            aria-label="Show previous Meet Aleah story"
+          />
+          <button
+            type="button"
+            onClick={() => goToClip(activeClipIndex + 1)}
+            className="absolute bottom-14 right-0 top-14 z-10 w-1/2 cursor-pointer bg-transparent focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-roseGold"
+            aria-label="Show next Meet Aleah story"
+          />
+          <div className="pointer-events-none absolute inset-y-0 left-1.5 z-20 flex items-center md:left-3">
+            <span className="flex h-6 w-6 items-center justify-center rounded-full border border-roseGold/30 bg-roseBlack/55 text-xs font-black text-roseGold backdrop-blur md:h-8 md:w-8 md:text-sm">
+              ‹
+            </span>
+          </div>
+          <div className="pointer-events-none absolute inset-y-0 right-1.5 z-20 flex items-center md:right-3">
+            <span className="flex h-6 w-6 items-center justify-center rounded-full border border-roseGold/30 bg-roseBlack/55 text-xs font-black text-roseGold backdrop-blur md:h-8 md:w-8 md:text-sm">
+              ›
+            </span>
+          </div>
+        </>
+      ) : null}
       {!reducedMotion ? (
         <button
           type="button"
           onClick={toggleSound}
-          className="absolute left-2 top-2 flex min-h-8 items-center gap-1.5 rounded-full border border-roseGold/35 bg-roseBlack/75 px-2 text-[8px] font-black uppercase tracking-[0.1em] text-roseGold shadow-[0_12px_30px_rgba(0,0,0,0.28)] backdrop-blur transition hover:border-roseGold hover:bg-roseWine focus-visible:ring-2 focus-visible:ring-roseGold sm:left-3 sm:top-3 sm:text-[9px] md:left-4 md:top-4 md:min-h-10 md:gap-2 md:px-3 md:text-[11px] md:tracking-[0.14em]"
+          className="absolute left-2 top-[54px] z-30 flex min-h-7 items-center gap-1.5 rounded-full border border-roseGold/35 bg-roseBlack/75 px-2 text-[8px] font-black uppercase tracking-[0.1em] text-roseGold shadow-[0_12px_30px_rgba(0,0,0,0.28)] backdrop-blur transition hover:border-roseGold hover:bg-roseWine focus-visible:ring-2 focus-visible:ring-roseGold sm:left-3 sm:text-[9px] md:left-4 md:top-[68px] md:min-h-8 md:gap-2 md:px-3 md:text-[10px] md:tracking-[0.14em]"
           aria-label={soundEnabled ? 'Mute Meet Aleah video audio' : 'Play Meet Aleah video with sound'}
         >
           <svg aria-hidden="true" viewBox="0 0 24 24" className="h-3 w-3 fill-none stroke-current stroke-[2.4] md:h-4 md:w-4">
@@ -220,50 +299,15 @@ export function MeetAleahVideo() {
           {soundEnabled ? 'Sound on' : 'Tap for sound'}
         </button>
       ) : null}
-      <div className="pointer-events-none absolute bottom-3 left-3 right-11 md:bottom-4 md:left-4 md:right-16">
-        <p className="text-[8px] font-black uppercase tracking-[0.16em] text-roseGold md:text-[10px] md:tracking-[0.22em]">{activeClip.label}</p>
+      <div className="pointer-events-none absolute bottom-3 left-3 right-11 z-20 md:bottom-4 md:left-4 md:right-16">
+        <p className="inline-flex rounded-full border border-roseGold/25 bg-roseBlack/55 px-2 py-1 text-[8px] font-black uppercase tracking-[0.16em] text-roseGold backdrop-blur md:text-[10px] md:tracking-[0.22em]">{activeClip.label}</p>
         <p className="mt-0.5 text-[11px] font-bold leading-tight text-roseCream md:mt-1 md:text-sm">{activeClip.descriptor}</p>
       </div>
-      {hasMultipleClips ? (
-        <>
-          <div className="absolute inset-x-4 top-1/2 hidden -translate-y-1/2 justify-between md:flex">
-            <button
-              type="button"
-              onClick={() => goToClip(activeClipIndex - 1)}
-              className="flex h-9 w-9 items-center justify-center rounded-full border border-roseGold/30 bg-roseBlack/70 text-sm font-black text-roseGold backdrop-blur transition hover:border-roseGold hover:bg-roseWine focus-visible:ring-2 focus-visible:ring-roseGold"
-              aria-label="Show previous Meet Aleah clip"
-            >
-              ‹
-            </button>
-            <button
-              type="button"
-              onClick={() => goToClip(activeClipIndex + 1)}
-              className="flex h-9 w-9 items-center justify-center rounded-full border border-roseGold/30 bg-roseBlack/70 text-sm font-black text-roseGold backdrop-blur transition hover:border-roseGold hover:bg-roseWine focus-visible:ring-2 focus-visible:ring-roseGold"
-              aria-label="Show next Meet Aleah clip"
-            >
-              ›
-            </button>
-          </div>
-          <div className="absolute bottom-3 left-1/2 flex -translate-x-1/2 items-center gap-1.5 md:bottom-4 md:gap-2">
-            {meetAleahClips.map((clip, index) => (
-              <button
-                key={clip.src}
-                type="button"
-                onClick={() => goToClip(index)}
-                className={`h-2 rounded-full border border-roseGold/40 transition md:h-2.5 ${
-                  index === activeClipIndex ? 'w-5 bg-roseGold md:w-7' : 'w-2 bg-roseCream/35 md:w-2.5'
-                }`}
-                aria-label={`Show Meet Aleah clip ${index + 1}`}
-              />
-            ))}
-          </div>
-        </>
-      ) : null}
       {!reducedMotion ? (
         <button
           type="button"
           onClick={togglePlayback}
-          className="absolute bottom-3 right-3 flex h-7 w-7 items-center justify-center rounded-full border border-roseGold/30 bg-roseBlack/70 text-[10px] font-black text-roseGold backdrop-blur transition hover:border-roseGold hover:bg-roseWine focus-visible:ring-2 focus-visible:ring-roseGold md:bottom-4 md:right-4 md:h-9 md:w-9 md:text-xs"
+          className="absolute bottom-3 right-3 z-30 flex h-7 w-7 items-center justify-center rounded-full border border-roseGold/30 bg-roseBlack/70 text-[10px] font-black text-roseGold backdrop-blur transition hover:border-roseGold hover:bg-roseWine focus-visible:ring-2 focus-visible:ring-roseGold md:bottom-4 md:right-4 md:h-9 md:w-9 md:text-xs"
           aria-label={playing ? 'Pause Aleah LIVE video' : 'Play Aleah LIVE video'}
         >
           {playing ? 'Ⅱ' : '▶'}
