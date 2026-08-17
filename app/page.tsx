@@ -2,6 +2,7 @@ import { ApplyButton } from '@/components/analytics';
 import { BenefitCard, ComparisonList } from '@/components/cards';
 import { FAQ } from '@/components/faq';
 import { FounderVideo } from '@/components/founder-video';
+import { MeetAleahVideo } from '@/components/meet-aleah-video';
 import { Reveal } from '@/components/reveal';
 import { SectionHeading } from '@/components/section-heading';
 import { TestimonialsSection } from '@/components/testimonials-section';
@@ -234,19 +235,8 @@ export default function Home() {
       </section>
 
       <section id="about" className="relative mx-auto grid max-w-7xl scroll-mt-28 gap-7 px-5 py-14 lg:grid-cols-[0.8fr_1fr] lg:items-center">
-        <div className="flex min-h-[360px] items-center justify-center rounded-lg border border-roseGold/20 bg-roseWine p-8 text-center">
-          {siteConfig.assets.founderImage ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img src={siteConfig.assets.founderImage} alt="Aleah, founder of ROSE Agency" className="h-full w-full rounded-md object-cover" />
-          ) : (
-            <div>
-              <span className="mx-auto flex h-20 w-20 items-center justify-center rounded-full border border-roseGold bg-roseBlack font-editorial text-4xl font-black text-roseGold">
-                R
-              </span>
-              <p className="mt-5 text-lg font-black text-roseCream">Founder image placeholder</p>
-              <p className="mt-2 text-sm text-roseMuted">Replace in siteConfig.assets.founderImage</p>
-            </div>
-          )}
+        <div className="flex items-center justify-center rounded-lg border border-roseGold/20 bg-roseWine p-4 text-center md:p-6">
+          <MeetAleahVideo />
         </div>
         <div>
           <SectionHeading eyebrow="Built By A Creator. For Creators." title="Meet Aleah." />
