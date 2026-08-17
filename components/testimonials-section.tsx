@@ -20,10 +20,11 @@ export function TestimonialsSection() {
     return process.env.NODE_ENV === 'production' ? [] : creatorTestimonials;
   }, []);
 
-  const carouselTestimonials = useMemo(
-    () => [...visibleTestimonials, ...visibleTestimonials],
-    [visibleTestimonials]
-  );
+  const carouselTestimonials = useMemo(() => {
+    const repeatCount = visibleTestimonials.length < 3 ? 6 : 2;
+
+    return Array.from({ length: repeatCount }, () => visibleTestimonials).flat();
+  }, [visibleTestimonials]);
 
   useEffect(() => {
     const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -39,11 +40,11 @@ export function TestimonialsSection() {
   }, []);
 
   useEffect(() => {
-    if (!scrollRef.current || paused || interacted || reducedMotion || visibleTestimonials.length < 2) return;
+    if (!scrollRef.current || paused || interacted || reducedMotion || carouselTestimonials.length < 2) return;
 
     const scroller = scrollRef.current;
     const interval = window.setInterval(() => {
-      scroller.scrollLeft += 0.28;
+      scroller.scrollLeft += 0.22;
 
       if (scroller.scrollLeft >= scroller.scrollWidth / 2) {
         scroller.scrollLeft = 0;
@@ -51,7 +52,7 @@ export function TestimonialsSection() {
     }, 30);
 
     return () => window.clearInterval(interval);
-  }, [interacted, paused, reducedMotion, visibleTestimonials.length]);
+  }, [carouselTestimonials.length, interacted, paused, reducedMotion]);
 
   if (visibleTestimonials.length === 0) {
     return null;
@@ -77,14 +78,13 @@ export function TestimonialsSection() {
       <div className="mb-8 flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
         <div className="max-w-3xl">
           <p className="mb-3 text-xs font-black uppercase tracking-[0.24em] text-roseGold">
-            Real Creators. Real Experiences.
+            REAL CREATORS. REAL EXPERIENCES.
           </p>
           <h2 id="creator-proof-heading" className="font-editorial text-4xl font-bold leading-tight text-roseCream md:text-5xl">
             Don't Just Take My Word For It.
           </h2>
           <p className="mt-4 text-base leading-7 text-roseMuted">
-            Hear from creators I've had the opportunity to coach, support, and grow alongside throughout their LIVE
-            journeys.
+            Hear from creators who have experienced Aleah's coaching, community, and LIVE support firsthand.
           </p>
           <p className="mt-3 font-editorial text-xl italic text-roseGoldSoft">
             Different creators. Different journeys. Real growth.
@@ -125,7 +125,11 @@ export function TestimonialsSection() {
         aria-label="Creator testimonial carousel"
       >
         {carouselTestimonials.map((testimonial, index) => (
-          <TestimonialCard key={`${testimonial.name}-${index}`} testimonial={testimonial} />
+          <TestimonialCard
+            key={`${testimonial.name}-${index}`}
+            testimonial={testimonial}
+            isDuplicate={index >= visibleTestimonials.length}
+          />
         ))}
       </div>
 
@@ -142,9 +146,18 @@ export function TestimonialsSection() {
   );
 }
 
-function TestimonialCard({ testimonial }: { testimonial: CreatorTestimonial }) {
+function TestimonialCard({
+  testimonial,
+  isDuplicate,
+}: {
+  testimonial: CreatorTestimonial;
+  isDuplicate: boolean;
+}) {
   return (
-    <article className="relative flex min-h-[320px] min-w-[86%] snap-center flex-col rounded-lg border border-roseGold/20 bg-roseCream/[0.055] p-6 shadow-[0_22px_80px_rgba(0,0,0,0.34)] backdrop-blur transition hover:-translate-y-1 hover:border-roseGold/45 focus-within:border-roseGold/60 sm:min-w-[58%] lg:min-w-[31%]">
+    <article
+      className="relative flex min-h-[320px] min-w-[86%] snap-center flex-col rounded-lg border border-roseGold/20 bg-roseCream/[0.055] p-6 shadow-[0_22px_80px_rgba(0,0,0,0.34)] backdrop-blur transition hover:-translate-y-1 hover:border-roseGold/45 focus-within:border-roseGold/60 sm:min-w-[58%] lg:min-w-[31%]"
+      aria-hidden={isDuplicate}
+    >
       <div className="pointer-events-none absolute right-5 top-3 font-editorial text-7xl leading-none text-roseGold/14">
         “
       </div>
