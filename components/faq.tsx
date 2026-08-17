@@ -25,6 +25,16 @@ const faqs = [
       "Not necessarily. If you're serious about developing as a LIVE creator, you can apply. Eligibility and onboarding remain subject to TikTok's requirements.",
   },
   {
+    question: 'Can I join ROSE with multiple TikTok accounts?',
+    answer:
+      'If you manage or go LIVE on multiple TikTok accounts, your eligibility may depend on how those accounts are currently connected within TikTok LIVE. Include all relevant accounts when you apply so our team can review your situation correctly.',
+  },
+  {
+    question: 'I’m already with another TikTok LIVE agency or Creator Network. Can I still join ROSE?',
+    answer:
+      'If your account is currently connected to another TikTok LIVE agency or Creator Network, you generally can’t be actively managed by two networks at the same time. You can still apply to ROSE, and we can review your current situation and explain what options may be available before you make any changes.',
+  },
+  {
     question: 'What happens after I apply?',
     answer:
       "Your application will be reviewed. If you're a potential fit, you'll receive next steps for the ROSE onboarding process.",

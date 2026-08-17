@@ -84,46 +84,52 @@ export default function Home() {
         </div>
       </header>
 
-      <section id="top" className="relative mx-auto grid max-w-7xl scroll-mt-28 gap-9 px-5 pb-14 pt-10 md:grid-cols-[1.02fr_0.98fr] md:items-center md:pb-20 md:pt-16 lg:gap-12">
-        <div>
-          <p className="mb-5 text-xs font-black uppercase tracking-[0.26em] text-roseGold">
-            TikTok LIVE Creator Network
-          </p>
-          <h1 className="max-w-5xl font-editorial text-5xl font-bold leading-[0.98] text-roseCream md:text-6xl lg:text-7xl">
-            You're Already Going LIVE. Now Let's Turn It Into Something Bigger.
-          </h1>
-          <p className="mt-7 max-w-2xl text-lg leading-8 text-roseMuted">
-            Get the strategy, coaching, community, and support to grow as a TikTok LIVE creator without figuring
-            it all out alone.
-          </p>
-          <p className="mt-6 text-sm font-black uppercase tracking-[0.16em] text-roseGoldSoft">
-            Strategy • Coaching • Community • Growth
-          </p>
-          <div className="mt-8 hidden flex-col items-start gap-3 md:flex">
-            <ApplyButton source="hero">Apply To Join ROSE</ApplyButton>
-            <p className="text-sm text-roseMuted">Applications are reviewed before acceptance.</p>
+      <section id="top" className="relative mx-auto grid max-w-7xl scroll-mt-28 gap-6 px-5 pb-14 pt-8 md:grid-cols-[1.02fr_0.98fr] md:items-center md:gap-9 md:pb-20 md:pt-16 lg:gap-12">
+        <div className="contents md:block">
+          <div className="order-1 md:contents">
+            <p className="mb-4 text-xs font-black uppercase tracking-[0.26em] text-roseGold md:mb-5">
+              TikTok LIVE Creator Network
+            </p>
+            <h1 className="max-w-5xl font-editorial text-[2.55rem] font-bold leading-[1] text-roseCream md:text-6xl md:leading-[0.98] lg:text-7xl">
+              You're Already Going LIVE. Now Let's Turn It Into Something Bigger.
+            </h1>
           </div>
-          <a
-            href={siteConfig.founderTikTokUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mt-6 inline-flex rounded-full border border-roseGold/25 bg-roseCream/[0.04] px-4 py-2 text-sm font-bold text-roseCream transition hover:border-roseGold"
-          >
-            Founded by {siteConfig.founderHandle}
-          </a>
+
+          <div className="order-3 flex flex-col items-start md:contents">
+            <p className="max-w-2xl text-base leading-7 text-roseMuted md:mt-7 md:text-lg md:leading-8">
+              Get the strategy, coaching, community, and support to grow as a TikTok LIVE creator without figuring
+              it all out alone.
+            </p>
+            <p className="mt-4 text-xs font-black uppercase tracking-[0.16em] text-roseGoldSoft md:mt-6 md:text-sm">
+              Strategy • Coaching • Community • Growth
+            </p>
+            <div className="order-4 mt-6 flex flex-col items-start gap-3 md:order-3 md:mt-8">
+              <ApplyButton source="hero">Apply To Join ROSE</ApplyButton>
+              <p className="text-sm text-roseMuted">Applications are reviewed before acceptance.</p>
+            </div>
+            <a
+              href={siteConfig.founderTikTokUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="order-3 mt-5 inline-flex rounded-full border border-roseGold/25 bg-roseCream/[0.04] px-4 py-2 text-sm font-bold text-roseCream transition hover:border-roseGold md:order-4 md:mt-6"
+            >
+              Founded by {siteConfig.founderHandle}
+            </a>
+          </div>
         </div>
 
-        <div className="space-y-4">
-          <FounderVideo />
-          <div className="flex flex-col items-start gap-3 md:hidden">
-            <ApplyButton source="hero_mobile">Apply To Join ROSE</ApplyButton>
-            <p className="text-sm text-roseMuted">Applications are reviewed before acceptance.</p>
+        <div className="contents md:block md:space-y-4">
+          <div className="order-2 md:contents">
+            <FounderVideo />
           </div>
-          <div className="rounded-lg border border-roseGold/20 bg-roseCream/[0.045] p-5">
-            <p className="text-sm leading-6 text-roseMuted">
-              Founded by <a href={siteConfig.founderTikTokUrl} target="_blank" rel="noopener noreferrer" className="font-black text-roseGoldSoft">{siteConfig.founderHandle}</a>.
-              Built for creators who are consistent, coachable, community-driven, and ready to grow.
-            </p>
+
+          <div className="order-5 md:contents">
+            <div className="rounded-lg border border-roseGold/20 bg-roseCream/[0.045] p-5">
+              <p className="text-sm leading-6 text-roseMuted">
+                Founded by <a href={siteConfig.founderTikTokUrl} target="_blank" rel="noopener noreferrer" className="font-black text-roseGoldSoft">{siteConfig.founderHandle}</a>.
+                Built for creators who are consistent, coachable, community-driven, and ready to grow.
+              </p>
+            </div>
           </div>
         </div>
       </section>
@@ -244,7 +250,7 @@ export default function Home() {
       </section>
 
       <section id="faq" className="relative mx-auto max-w-4xl scroll-mt-28 px-5 py-14">
-        <SectionHeading eyebrow="FAQ" title="Questions Before You Apply" center />
+        <SectionHeading eyebrow="FAQ" title="Questions Before You Apply?" copy="Everything you need to know before joining ROSE." center />
         <FAQ />
       </section>
 
