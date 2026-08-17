@@ -234,27 +234,31 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="about" className="relative mx-auto grid max-w-7xl scroll-mt-28 gap-7 px-5 py-14 lg:grid-cols-[0.8fr_1fr] lg:items-center">
-        <div className="flex items-center justify-center rounded-lg border border-roseGold/20 bg-roseWine p-4 text-center md:p-6">
+      <section id="about" className="relative mx-auto grid max-w-7xl scroll-mt-28 grid-cols-[minmax(0,0.42fr)_minmax(0,0.58fr)] gap-x-4 gap-y-5 px-5 py-14 pb-28 md:grid-cols-1 md:gap-7 md:pb-14 lg:grid-cols-[0.8fr_1fr] lg:items-center">
+        <div className="flex items-center justify-center rounded-lg border border-roseGold/20 bg-roseWine p-2 text-center md:p-6 lg:row-span-2">
           <MeetAleahVideo />
         </div>
-        <div>
-          <SectionHeading eyebrow="Built By A Creator. For Creators." title="Meet Aleah." />
-          <a href={siteConfig.founderTikTokUrl} target="_blank" rel="noopener noreferrer" className="font-black text-roseGoldSoft">
+        <div className="min-w-0 self-center">
+          <SectionHeading eyebrow="Built By A Creator. For Creators." title="Meet Aleah." compactMobile />
+          <a href={siteConfig.founderTikTokUrl} target="_blank" rel="noopener noreferrer" className="text-[13px] font-black text-roseGoldSoft sm:text-sm md:text-base">
             {siteConfig.founderHandle}
           </a>
-          <div className="mt-5 space-y-4 text-base leading-7 text-roseMuted">
+          <div className="mt-3 text-[13px] leading-6 text-roseMuted sm:text-sm sm:leading-6 md:mt-5 md:text-base md:leading-7">
             <p>
               I built ROSE Agency from the perspective of someone who understands what it's like to actually be on the
               other side of the screen, building a community, learning LIVE, monetizing content, and figuring out what
               works in real time.
             </p>
+          </div>
+        </div>
+        <div className="col-span-2 md:col-span-1 lg:col-start-2">
+          <div className="space-y-4 text-sm leading-6 text-roseMuted sm:text-[15px] sm:leading-7 md:text-base md:leading-7">
             <p>
               ROSE exists to give creators the strategy, support, and development I believe creators deserve while
               building on LIVE.
             </p>
           </div>
-          <p className="mt-6 text-lg font-black text-roseGoldSoft">ROSE = Create. Connect. Elevate.</p>
+          <p className="mt-4 text-[15px] font-black text-roseGoldSoft md:mt-6 md:text-lg">ROSE = Create. Connect. Elevate.</p>
         </div>
       </section>
 
