@@ -1,0 +1,43 @@
+# Dependencies
+node_modules/
+
+# Next.js
+.next/
+out/
+
+# Production build output
+dist/
+build/
+
+# Local environment files
+.env
+.env.*
+!.env.example
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Runtime/cache/temp files
+.cache/
+.turbo/
+.parcel-cache/
+.vercel/
+coverage/
+tmp/
+temp/
+*.tmp
+*.temp
+*.sb-*
+
+# Large local source/mockup videos are not needed for production deploys.
+# Keep the approved production MP4 in public/videos tracked.
+public/videos/*.mov
+
+# OS/editor files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
