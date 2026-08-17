@@ -81,8 +81,8 @@ export function FAQ() {
       })}
       <div className="rounded-lg border border-roseGold/30 bg-roseGold/[0.08] p-5 text-center">
         <p className="font-editorial text-2xl font-bold text-roseCream">Still have questions before applying?</p>
-        <a href="mailto:creators@roseagencylive.com" className="mt-2 inline-block font-black text-roseGoldSoft">
-          creators@roseagencylive.com
+        <a href="mailto:support@roseagencylive.com" className="mt-2 inline-block font-black text-roseGoldSoft">
+          support@roseagencylive.com
         </a>
       </div>
     </div>

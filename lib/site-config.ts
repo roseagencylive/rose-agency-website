@@ -4,7 +4,7 @@ export const siteConfig = {
   website: 'roseagencylive.com',
   applicationUrl: 'https://www.tiktok.com/t/ZTDjAARXQ/',
   tiktokUrl: 'https://www.tiktok.com/@roseagencylive',
-  founderTikTokUrl: 'https://www.tiktok.com/@aleahroseee',
+  founderTikTokUrl: 'https://www.tiktok.com/@calledandcapable',
   tiktokHandle: '@roseagencylive',
   founderHandle: '@aleahroseee',
   contacts: {

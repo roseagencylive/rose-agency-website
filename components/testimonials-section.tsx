@@ -73,21 +73,21 @@ export function TestimonialsSection() {
   return (
     <section
       aria-labelledby="creator-proof-heading"
-      className="relative mx-auto max-w-7xl px-5 py-9 md:py-10"
+      className="relative mx-auto max-w-7xl px-5 py-8 md:py-9"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
       onFocus={() => setPaused(true)}
       onBlur={() => setPaused(false)}
     >
-      <div className="mb-5 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+      <div className="mb-4 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
         <div className="max-w-2xl">
           <p className="mb-2 text-[10px] font-black uppercase tracking-[0.24em] text-roseGold">
             REAL CREATORS. REAL EXPERIENCES.
           </p>
-          <h2 id="creator-proof-heading" className="font-editorial text-2xl font-bold leading-tight text-roseCream md:text-3xl">
+          <h2 id="creator-proof-heading" className="font-editorial text-[1.7rem] font-bold leading-tight text-roseCream md:text-[2rem]">
             Don't Just Take My Word For It.
           </h2>
-          <p className="mt-2 text-sm leading-6 text-roseMuted md:text-base">
+          <p className="mt-2 max-w-xl text-sm leading-6 text-roseMuted">
             Hear from creators who have experienced Aleah's coaching, community, and LIVE support firsthand.
           </p>
           {visibleTestimonials.some((testimonial) => testimonial.isPlaceholderForDevelopment) ? (
@@ -121,7 +121,7 @@ export function TestimonialsSection() {
 
       <div
         ref={scrollRef}
-        className={`rose-testimonial-scroll -mx-5 flex snap-x gap-4 overflow-x-auto px-5 pb-2 ${
+        className={`rose-testimonial-scroll -mx-5 flex snap-x gap-3 overflow-x-auto px-5 pb-2 ${
           hasMultipleTestimonials ? '' : 'justify-center md:justify-start'
         }`}
         onPointerDown={() => setPaused(true)}
@@ -140,12 +140,12 @@ export function TestimonialsSection() {
         ))}
       </div>
 
-      <div className="mt-5 rounded-lg border border-roseGold/20 bg-roseWine/20 p-4 text-center md:flex md:items-center md:justify-between md:text-left">
+      <div className="mt-4 rounded-lg border border-roseGold/20 bg-roseWine/20 p-4 text-center md:flex md:items-center md:justify-between md:text-left">
         <div>
           <p className="text-[10px] font-black uppercase tracking-[0.22em] text-roseGold">
           Real People. Real Journeys. Real Progress.
           </p>
-          <p className="mt-2 font-editorial text-2xl font-bold text-roseCream">Ready To Write Your Own Story?</p>
+          <p className="mt-1 font-editorial text-xl font-bold text-roseCream md:text-2xl">Ready To Write Your Own Story?</p>
         </div>
         <div className="mt-4 md:mt-0">
           <ApplyButton source="testimonials_section" className="min-h-10 px-5 text-[10px]">Apply To Join ROSE</ApplyButton>
@@ -164,14 +164,14 @@ function TestimonialCard({
 }) {
   return (
     <article
-      className="relative flex min-h-[252px] min-w-[88%] max-w-[360px] snap-center flex-col rounded-lg border border-roseGold/18 bg-roseCream/[0.045] p-4 shadow-[0_16px_45px_rgba(0,0,0,0.28)] backdrop-blur transition hover:-translate-y-0.5 hover:border-roseGold/40 hover:shadow-[0_18px_55px_rgba(216,182,106,0.08)] focus-within:border-roseGold/50 sm:min-w-[340px] sm:p-5 md:min-w-[340px] lg:min-w-[340px]"
+      className="relative flex min-h-[218px] min-w-[88%] max-w-[330px] snap-center flex-col rounded-lg border border-roseGold/18 bg-roseCream/[0.045] p-4 shadow-[0_14px_38px_rgba(0,0,0,0.26)] backdrop-blur transition hover:-translate-y-0.5 hover:border-roseGold/40 hover:shadow-[0_16px_44px_rgba(216,182,106,0.08)] focus-within:border-roseGold/50 sm:min-w-[310px] md:min-w-[320px] lg:min-w-[320px]"
       aria-hidden={isDuplicate}
     >
       <div className="pointer-events-none absolute right-4 top-3 font-editorial text-5xl leading-none text-roseGold/14">
         “
       </div>
       <div className="relative z-10 flex items-center gap-3">
-        <div className="flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-full border border-roseGold/45 bg-roseWine shadow-[0_0_0_3px_rgba(58,8,19,0.65)]">
+        <div className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-full border border-roseGold/45 bg-roseWine shadow-[0_0_0_3px_rgba(58,8,19,0.65)]">
           {testimonial.avatar ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img src={testimonial.avatar} alt={`${testimonial.name} profile`} className="h-full w-full object-cover object-center" />
@@ -186,24 +186,24 @@ function TestimonialCard({
           )}
         </div>
         <div>
-          <h3 className="text-sm font-black text-roseCream">{testimonial.name}</h3>
+          <h3 className="text-sm font-black leading-tight text-roseCream">{testimonial.name}</h3>
           <p className="text-xs font-bold text-roseGoldSoft">{testimonial.handle}</p>
         </div>
       </div>
 
-      <div className="relative z-10 mt-4 flex flex-wrap gap-2">
-        <span className="rounded-full border border-roseGold/22 bg-roseGold/[0.07] px-2.5 py-1 text-[9px] font-black uppercase tracking-[0.12em] text-roseGoldSoft">
+      <div className="relative z-10 mt-3 flex flex-wrap gap-2">
+        <span className="rounded-full border border-roseGold/22 bg-roseGold/[0.07] px-2 py-0.5 text-[8px] font-black uppercase tracking-[0.12em] text-roseGoldSoft">
           {testimonial.category}
         </span>
         {testimonial.result ? (
-          <span className="rounded-full bg-roseGold px-2.5 py-1 text-[9px] font-black uppercase tracking-[0.12em] text-roseBlack">
+          <span className="rounded-full bg-roseGold px-2 py-0.5 text-[8px] font-black uppercase tracking-[0.12em] text-roseBlack">
             {testimonial.result}
           </span>
         ) : null}
       </div>
 
-      <p className="relative z-10 mt-4 flex-1 text-[15px] leading-6 text-roseMuted md:text-base md:leading-7">{testimonial.testimonial}</p>
-      <p className="relative z-10 mt-4 text-[10px] font-black uppercase tracking-[0.16em] text-roseGold/75">
+      <p className="relative z-10 mt-3 flex-1 text-sm leading-[1.6] text-roseMuted md:text-[15px]">{testimonial.testimonial}</p>
+      <p className="relative z-10 mt-3 text-[9px] font-black uppercase tracking-[0.16em] text-roseGold/75">
         Creator Experience
       </p>
     </article>

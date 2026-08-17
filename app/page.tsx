@@ -2,6 +2,7 @@ import { ApplyButton } from '@/components/analytics';
 import { BenefitCard, ComparisonList } from '@/components/cards';
 import { FAQ } from '@/components/faq';
 import { FounderVideo } from '@/components/founder-video';
+import { Reveal } from '@/components/reveal';
 import { SectionHeading } from '@/components/section-heading';
 import { TestimonialsSection } from '@/components/testimonials-section';
 import { siteConfig } from '@/lib/site-config';
@@ -137,51 +138,80 @@ export default function Home() {
       <TestimonialsSection />
 
       <section id="why-rose" className="relative mx-auto max-w-7xl scroll-mt-28 px-5 py-14">
-        <SectionHeading
-          eyebrow="Let's Be Real."
-          title="Going LIVE Isn't the Hard Part. Knowing How to Grow From It Is."
-          copy="You're showing up. You're putting in the work. But you're still wondering..."
-        />
+        <Reveal>
+          <SectionHeading
+            eyebrow="Let's Be Real."
+            title="Going LIVE Isn't the Hard Part. Knowing How to Grow From It Is."
+            copy="You're showing up. You're putting in the work. But you're still wondering..."
+          />
+        </Reveal>
         <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-5">
-          {problemQuestions.map((question) => (
-            <div key={question} className="rounded-lg border border-roseGold/20 bg-roseCream/[0.045] p-5">
+          {problemQuestions.map((question, index) => (
+            <Reveal key={question} delay={index * 70}>
+            <div className="rounded-lg border border-roseGold/20 bg-roseCream/[0.045] p-5">
               <p className="text-base font-bold leading-6 text-roseCream">{question}</p>
             </div>
+            </Reveal>
           ))}
         </div>
-        <p className="mt-7 text-sm font-black uppercase tracking-[0.2em] text-roseGold">That's where ROSE comes in.</p>
+        <Reveal delay={120}>
+          <p className="mt-7 text-sm font-black uppercase tracking-[0.2em] text-roseGold">That's where ROSE comes in.</p>
+        </Reveal>
       </section>
 
-      <section className="relative mx-auto grid max-w-7xl gap-5 px-5 py-14 md:grid-cols-2">
-        <ComparisonList title="Before ROSE" items={beforeItems} tone="before" />
-        <ComparisonList title="Inside ROSE" items={afterItems} tone="after" />
+      <section className="relative mx-auto grid max-w-7xl gap-5 px-5 py-14 md:grid-cols-[1fr_auto_1fr] md:items-center">
+        <Reveal>
+          <ComparisonList title="Before ROSE" items={beforeItems} tone="before" />
+        </Reveal>
+        <Reveal delay={90} className="hidden md:block">
+          <div className="flex h-12 w-12 items-center justify-center rounded-full border border-roseGold/30 bg-roseWine/45 text-roseGold shadow-[0_16px_50px_rgba(216,182,106,0.08)]" aria-hidden="true">
+            →
+          </div>
+        </Reveal>
+        <Reveal delay={150}>
+          <ComparisonList title="Inside ROSE" items={afterItems} tone="after" />
+        </Reveal>
       </section>
 
       <section className="relative mx-auto max-w-7xl px-5 py-8">
-        <div className="rounded-lg border border-roseGold/25 bg-roseWine/35 p-6 md:p-8">
-          <p className="text-xs font-black uppercase tracking-[0.24em] text-roseGold">
-            Creator Development, Not Just Representation.
-          </p>
-          <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
-            {['Strategy', 'Performance Insights', 'Coaching', 'Community', 'Growth Development'].map((item) => (
-              <div key={item} className="rounded-full border border-roseGold/20 bg-roseBlack/30 px-4 py-3 text-center text-sm font-black text-roseCream">
-                {item}
-              </div>
-            ))}
+        <Reveal>
+          <div className="relative overflow-hidden rounded-lg border border-roseGold/25 bg-[linear-gradient(135deg,rgba(100,22,40,0.36),rgba(19,9,11,0.9))] p-6 shadow-[0_24px_90px_rgba(0,0,0,0.28)] md:p-8">
+            <div className="pointer-events-none absolute inset-x-8 top-0 h-px bg-gradient-to-r from-transparent via-roseGold/55 to-transparent" />
+            <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
+              <p className="max-w-xl font-editorial text-2xl font-bold leading-tight text-roseCream md:text-3xl">
+                Creator Development, Not Just Representation.
+              </p>
+              <div className="h-px flex-1 bg-gradient-to-r from-roseGold/35 to-transparent md:max-w-xs" />
+            </div>
+            <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+              {['Strategy', 'Performance Insights', 'Coaching', 'Community', 'Growth Development'].map((item, index) => (
+                <Reveal key={item} delay={index * 60}>
+                  <div className="rounded-full border border-roseGold/20 bg-roseBlack/35 px-4 py-3 text-center text-xs font-black uppercase tracking-[0.12em] text-roseCream shadow-[inset_0_1px_0_rgba(248,238,220,0.06)]">
+                    {item}
+                  </div>
+                </Reveal>
+              ))}
+            </div>
           </div>
-        </div>
+        </Reveal>
       </section>
 
       <section id="benefits" className="relative mx-auto max-w-7xl scroll-mt-28 px-5 py-14">
-        <SectionHeading eyebrow="What You Get Inside ROSE" title="We Don't Just Sign Creators. We Develop Them." />
+        <Reveal>
+          <div className="rounded-lg border border-roseGold/15 bg-roseCream/[0.025] px-5 py-6 md:px-7">
+            <SectionHeading eyebrow="What You Get Inside ROSE" title="We Don't Just Sign Creators. We Develop Them." />
+          </div>
+        </Reveal>
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
-          {benefits.map(([title, copy]) => (
-            <BenefitCard key={title} title={title} copy={copy} />
+          {benefits.map(([title, copy], index) => (
+            <Reveal key={title} delay={index * 70}>
+              <BenefitCard title={title} copy={copy} />
+            </Reveal>
           ))}
         </div>
-        <div className="mt-8 text-center">
+        <Reveal delay={120} className="mt-8 text-center">
           <ApplyButton source="benefits">See If You're A Fit</ApplyButton>
-        </div>
+        </Reveal>
       </section>
 
       <section className="relative mx-auto max-w-7xl px-5 py-14">
