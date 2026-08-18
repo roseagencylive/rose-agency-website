@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { creatorTestimonials } from '@/lib/testimonials';
 
 type VideoTestimonial = {
+  displayName?: string;
   handle: string;
   quote: string;
   duration: string;
@@ -13,9 +14,12 @@ type VideoTestimonial = {
 
 const videoTestimonials: VideoTestimonial[] = [
   {
-    handle: '@creator_coming_soon',
-    quote: 'Real creator video testimonial placeholder.',
-    duration: '0:00',
+    displayName: 'Kola G | Becoming Her',
+    handle: '@thekolagway',
+    quote: 'CREATOR STORY',
+    duration: '1:19',
+    videoSrc: '/videos/kola-g-testimonial.mp4',
+    posterSrc: '/images/kola-g-testimonial-poster.png',
   },
   {
     handle: '@creator_coming_soon',
@@ -172,6 +176,9 @@ function VideoTestimonialCard({
         </div>
       </button>
       <div className="mt-4">
+        {testimonial.displayName ? (
+          <p className="text-base font-black leading-tight text-roseCream">{testimonial.displayName}</p>
+        ) : null}
         <p className="text-sm font-black text-roseGoldSoft">{testimonial.handle}</p>
         <p className="mt-2 text-sm leading-6 text-roseMuted">“{testimonial.quote}”</p>
       </div>
