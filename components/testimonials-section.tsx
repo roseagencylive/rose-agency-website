@@ -1,211 +1,180 @@
 'use client';
 
-import { useEffect, useMemo, useRef, useState } from 'react';
-import { ApplyButton } from '@/components/analytics';
-import { creatorTestimonials, type CreatorTestimonial } from '@/lib/testimonials';
+import { useEffect, useRef, useState } from 'react';
+import { creatorTestimonials } from '@/lib/testimonials';
+
+type VideoTestimonial = {
+  handle: string;
+  quote: string;
+  duration: string;
+  videoSrc?: string;
+  posterSrc?: string;
+};
+
+const videoTestimonials: VideoTestimonial[] = [
+  {
+    handle: '@creator_coming_soon',
+    quote: 'Real creator video testimonial placeholder.',
+    duration: '0:00',
+  },
+  {
+    handle: '@creator_coming_soon',
+    quote: 'Real creator video testimonial placeholder.',
+    duration: '0:00',
+  },
+  {
+    handle: '@creator_coming_soon',
+    quote: 'Real creator video testimonial placeholder.',
+    duration: '0:00',
+  },
+];
 
 export function TestimonialsSection() {
-  const scrollRef = useRef<HTMLDivElement>(null);
-  const [paused, setPaused] = useState(false);
-  const [reducedMotion, setReducedMotion] = useState(false);
-
-  const visibleTestimonials = useMemo(() => {
-    const realTestimonials = creatorTestimonials.filter((testimonial) => !testimonial.isPlaceholderForDevelopment);
-
-    if (realTestimonials.length > 0) {
-      return realTestimonials;
-    }
-
-    return process.env.NODE_ENV === 'production' ? [] : creatorTestimonials;
-  }, []);
-
-  const carouselTestimonials = useMemo(() => {
-    if (visibleTestimonials.length < 2) {
-      return visibleTestimonials;
-    }
-
-    const repeatCount = visibleTestimonials.length < 4 ? 3 : 2;
-
-    return Array.from({ length: repeatCount }, () => visibleTestimonials).flat();
-  }, [visibleTestimonials]);
-
-  const hasMultipleTestimonials = visibleTestimonials.length > 1;
+  const [activeVideo, setActiveVideo] = useState<VideoTestimonial | null>(null);
+  const modalVideoRef = useRef<HTMLVideoElement>(null);
+  const savedWrittenTestimonialsCount = creatorTestimonials.length;
 
   useEffect(() => {
-    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    if (!activeVideo) return;
 
-    function syncMotionPreference() {
-      setReducedMotion(mediaQuery.matches);
-    }
-
-    syncMotionPreference();
-    mediaQuery.addEventListener('change', syncMotionPreference);
-
-    return () => mediaQuery.removeEventListener('change', syncMotionPreference);
-  }, []);
-
-  useEffect(() => {
-    if (!scrollRef.current || paused || reducedMotion || !hasMultipleTestimonials) return;
-
-    const scroller = scrollRef.current;
-    const interval = window.setInterval(() => {
-      scroller.scrollLeft += 0.16;
-
-      if (scroller.scrollLeft >= scroller.scrollWidth / 2) {
-        scroller.scrollLeft = 0;
+    function closeOnEscape(event: KeyboardEvent) {
+      if (event.key === 'Escape') {
+        setActiveVideo(null);
       }
-    }, 30);
+    }
 
-    return () => window.clearInterval(interval);
-  }, [hasMultipleTestimonials, paused, reducedMotion]);
+    window.addEventListener('keydown', closeOnEscape);
 
-  if (visibleTestimonials.length === 0) {
-    return null;
-  }
+    return () => window.removeEventListener('keydown', closeOnEscape);
+  }, [activeVideo]);
 
-  function scrollCards(direction: 'previous' | 'next') {
-    scrollRef.current?.scrollBy({
-      left: direction === 'next' ? 376 : -376,
-      behavior: reducedMotion ? 'auto' : 'smooth',
-    });
-  }
+  useEffect(() => {
+    if (!activeVideo) {
+      modalVideoRef.current?.pause();
+    }
+  }, [activeVideo]);
 
   return (
-    <section
-      aria-labelledby="creator-proof-heading"
-      className="relative mx-auto max-w-7xl px-5 py-8 md:py-9"
-      onMouseEnter={() => setPaused(true)}
-      onMouseLeave={() => setPaused(false)}
-      onFocus={() => setPaused(true)}
-      onBlur={() => setPaused(false)}
-    >
-      <div className="mb-4 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-        <div className="max-w-2xl">
-          <p className="mb-2 text-[10px] font-black uppercase tracking-[0.24em] text-roseGold">
-            REAL CREATORS. REAL EXPERIENCES.
-          </p>
-          <h2 id="creator-proof-heading" className="font-editorial text-[1.7rem] font-bold leading-tight text-roseCream md:text-[2rem]">
-            Don't Just Take My Word For It.
-          </h2>
-          <p className="mt-2 max-w-xl text-sm leading-6 text-roseMuted">
-            Hear from creators who have experienced Aleah's coaching, community, and LIVE support firsthand.
-          </p>
-          {visibleTestimonials.some((testimonial) => testimonial.isPlaceholderForDevelopment) ? (
-            <p className="mt-4 rounded-lg border border-roseGold/30 bg-roseGold/[0.08] px-4 py-3 text-xs font-bold uppercase tracking-[0.12em] text-roseGoldSoft">
-              Development placeholders only. Replace before production.
-            </p>
-          ) : null}
-        </div>
-
-        {hasMultipleTestimonials ? (
-          <div className="hidden gap-2 md:flex" aria-label="Testimonial controls">
-          <button
-            type="button"
-            onClick={() => scrollCards('previous')}
-            className="flex h-9 w-9 items-center justify-center rounded-full border border-roseGold/25 text-sm text-roseGold transition hover:border-roseGold hover:bg-roseGold/10 focus-visible:ring-2 focus-visible:ring-roseGold"
-            aria-label="Previous testimonials"
-          >
-            ←
-          </button>
-          <button
-            type="button"
-            onClick={() => scrollCards('next')}
-            className="flex h-9 w-9 items-center justify-center rounded-full border border-roseGold/25 text-sm text-roseGold transition hover:border-roseGold hover:bg-roseGold/10 focus-visible:ring-2 focus-visible:ring-roseGold"
-            aria-label="Next testimonials"
-          >
-            →
-          </button>
-          </div>
-        ) : null}
+    <section aria-labelledby="creator-proof-heading" className="relative mx-auto max-w-7xl px-5 py-10 md:py-12">
+      <div className="mx-auto max-w-3xl text-center">
+        <p className="mb-3 text-[10px] font-black uppercase tracking-[0.24em] text-roseGold md:text-xs">
+          REAL STORIES. REAL RESULTS.
+        </p>
+        <h2 id="creator-proof-heading" className="font-editorial text-4xl font-bold leading-tight text-roseCream md:text-5xl">
+          Hear From Our Creators
+        </h2>
+        <p className="mt-3 text-base font-bold text-roseGoldSoft md:text-lg">Real growth. Real impact.</p>
       </div>
 
       <div
-        ref={scrollRef}
-        className={`rose-testimonial-scroll -mx-5 flex snap-x gap-3 overflow-x-auto px-5 pb-2 ${
-          hasMultipleTestimonials ? '' : 'justify-center md:justify-start'
-        }`}
-        onPointerDown={() => setPaused(true)}
-        onPointerUp={() => setPaused(false)}
-        onTouchStart={() => setPaused(true)}
-        onTouchEnd={() => setPaused(false)}
-        tabIndex={0}
-        aria-label={hasMultipleTestimonials ? 'Creator testimonial carousel' : 'Creator testimonial'}
+        className="rose-testimonial-scroll -mx-5 mt-8 flex snap-x gap-4 overflow-x-auto px-5 pb-3 md:mx-0 md:grid md:grid-cols-3 md:overflow-visible md:px-0 md:pb-0"
+        aria-label="Video testimonial placeholders"
       >
-        {carouselTestimonials.map((testimonial, index) => (
-          <TestimonialCard
-            key={`${testimonial.name}-${index}`}
+        {videoTestimonials.map((testimonial, index) => (
+          <VideoTestimonialCard
+            key={`${testimonial.handle}-${index}`}
             testimonial={testimonial}
-            isDuplicate={index >= visibleTestimonials.length}
+            index={index}
+            onOpen={() => {
+              if (testimonial.videoSrc) {
+                setActiveVideo(testimonial);
+              }
+            }}
           />
         ))}
       </div>
 
-      <div className="mt-4 rounded-lg border border-roseGold/20 bg-roseWine/20 p-4 text-center md:flex md:items-center md:justify-between md:text-left">
-        <div>
-          <p className="text-[10px] font-black uppercase tracking-[0.22em] text-roseGold">
-          Real People. Real Journeys. Real Progress.
-          </p>
-          <p className="mt-1 font-editorial text-xl font-bold text-roseCream md:text-2xl">Ready To Write Your Own Story?</p>
-        </div>
-        <div className="mt-4 md:mt-0">
-          <ApplyButton source="testimonials_section" className="min-h-10 px-5 text-[10px]">Apply To Join ROSE</ApplyButton>
-        </div>
+      <div className="mt-8 rounded-lg border border-roseGold/15 bg-roseCream/[0.025] px-5 py-5 text-center">
+        <p className="text-[10px] font-black uppercase tracking-[0.22em] text-roseGold">Written Creator Stories</p>
+        <p className="mx-auto mt-2 max-w-2xl text-sm leading-6 text-roseMuted">
+          Reserved for real written testimonials. {savedWrittenTestimonialsCount > 0 ? 'Approved written creator stories are preserved for this section.' : 'Real written stories will be added here.'}
+        </p>
       </div>
+
+      {activeVideo?.videoSrc ? (
+        <div
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-roseBlack/88 px-5 py-8 backdrop-blur"
+          role="dialog"
+          aria-modal="true"
+          aria-label={`${activeVideo.handle} video testimonial`}
+          onClick={() => setActiveVideo(null)}
+        >
+          <div className="relative w-full max-w-[420px]" onClick={(event) => event.stopPropagation()}>
+            <button
+              type="button"
+              onClick={() => setActiveVideo(null)}
+              className="absolute -right-2 -top-12 flex h-10 w-10 items-center justify-center rounded-full border border-roseGold/30 bg-roseBlack text-lg font-black text-roseGold transition hover:border-roseGold hover:bg-roseWine focus-visible:ring-2 focus-visible:ring-roseGold"
+              aria-label="Close video testimonial"
+            >
+              ×
+            </button>
+            <div className="overflow-hidden rounded-lg border border-roseGold/30 bg-roseInk shadow-[0_30px_100px_rgba(0,0,0,0.45)]">
+              <video
+                ref={modalVideoRef}
+                src={activeVideo.videoSrc}
+                poster={activeVideo.posterSrc}
+                className="aspect-[9/16] max-h-[82vh] w-full bg-roseBlack object-contain"
+                controls
+                playsInline
+                preload="metadata"
+                aria-label={`${activeVideo.handle} video testimonial`}
+              />
+            </div>
+          </div>
+        </div>
+      ) : null}
     </section>
   );
 }
 
-function TestimonialCard({
+function VideoTestimonialCard({
   testimonial,
-  isDuplicate,
+  index,
+  onOpen,
 }: {
-  testimonial: CreatorTestimonial;
-  isDuplicate: boolean;
+  testimonial: VideoTestimonial;
+  index: number;
+  onOpen: () => void;
 }) {
+  const hasVideo = Boolean(testimonial.videoSrc);
+
   return (
-    <article
-      className="relative flex min-h-[218px] min-w-[88%] max-w-[330px] snap-center flex-col rounded-lg border border-roseGold/18 bg-roseCream/[0.045] p-4 shadow-[0_14px_38px_rgba(0,0,0,0.26)] backdrop-blur transition hover:-translate-y-0.5 hover:border-roseGold/40 hover:shadow-[0_16px_44px_rgba(216,182,106,0.08)] focus-within:border-roseGold/50 sm:min-w-[310px] md:min-w-[320px] lg:min-w-[320px]"
-      aria-hidden={isDuplicate}
-    >
-      <div className="pointer-events-none absolute right-4 top-3 font-editorial text-5xl leading-none text-roseGold/14">
-        “
-      </div>
-      <div className="relative z-10 flex items-center gap-3">
-        <div className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-full border border-roseGold/45 bg-roseWine shadow-[0_0_0_3px_rgba(58,8,19,0.65)]">
-          {testimonial.avatar ? (
+    <article className="min-w-[86%] snap-center md:min-w-0">
+      <button
+        type="button"
+        onClick={onOpen}
+        disabled={!hasVideo}
+        className="group relative block w-full overflow-hidden rounded-lg border border-roseGold/20 bg-[linear-gradient(145deg,rgba(58,8,19,0.86),rgba(7,5,5,0.96))] text-left shadow-[0_18px_60px_rgba(0,0,0,0.28)] transition hover:-translate-y-1 hover:border-roseGold/45 hover:shadow-[0_22px_70px_rgba(216,182,106,0.09)] focus-visible:ring-2 focus-visible:ring-roseGold disabled:cursor-default disabled:hover:translate-y-0"
+        aria-label={hasVideo ? `Play ${testimonial.handle} video testimonial` : `Video testimonial placeholder ${index + 1}`}
+      >
+        <div className="relative aspect-[9/14] bg-roseWine/70">
+          {testimonial.posterSrc ? (
             // eslint-disable-next-line @next/next/no-img-element
-            <img src={testimonial.avatar} alt={`${testimonial.name} profile`} className="h-full w-full object-cover object-center" />
+            <img src={testimonial.posterSrc} alt={`${testimonial.handle} video poster`} className="h-full w-full object-cover object-center" />
           ) : (
-            <span className="font-editorial text-xl font-black text-roseGold">
-              {testimonial.name
-                .split(' ')
-                .map((word) => word[0])
-                .join('')
-                .slice(0, 2)}
-            </span>
+            <div className="flex h-full w-full flex-col items-center justify-center px-8 text-center">
+              <div className="mb-5 flex h-16 w-16 items-center justify-center rounded-full border border-roseGold/30 bg-roseBlack/45 font-editorial text-2xl font-bold text-roseGold">
+                {index + 1}
+              </div>
+              <p className="text-[10px] font-black uppercase tracking-[0.22em] text-roseGold">Video Placeholder</p>
+              <p className="mt-2 text-sm leading-6 text-roseMuted">Real creator story coming soon.</p>
+            </div>
           )}
-        </div>
-        <div>
-          <h3 className="text-sm font-black leading-tight text-roseCream">{testimonial.name}</h3>
-          <p className="text-xs font-bold text-roseGoldSoft">{testimonial.handle}</p>
-        </div>
-      </div>
-
-      <div className="relative z-10 mt-3 flex flex-wrap gap-2">
-        <span className="rounded-full border border-roseGold/22 bg-roseGold/[0.07] px-2 py-0.5 text-[8px] font-black uppercase tracking-[0.12em] text-roseGoldSoft">
-          {testimonial.category}
-        </span>
-        {testimonial.result ? (
-          <span className="rounded-full bg-roseGold px-2 py-0.5 text-[8px] font-black uppercase tracking-[0.12em] text-roseBlack">
-            {testimonial.result}
+          <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(7,5,5,0.08),transparent_46%,rgba(7,5,5,0.72))]" />
+          <div className="absolute inset-0 flex items-center justify-center">
+            <span className="flex h-14 w-14 items-center justify-center rounded-full border border-roseGold/35 bg-roseBlack/70 text-lg text-roseGold shadow-[0_16px_45px_rgba(0,0,0,0.34)] backdrop-blur transition group-hover:scale-105 group-hover:border-roseGold">
+              ▶
+            </span>
+          </div>
+          <span className="absolute bottom-3 right-3 rounded-full border border-roseGold/25 bg-roseBlack/70 px-2 py-1 text-[10px] font-black text-roseGold backdrop-blur">
+            {testimonial.duration}
           </span>
-        ) : null}
+        </div>
+      </button>
+      <div className="mt-4">
+        <p className="text-sm font-black text-roseGoldSoft">{testimonial.handle}</p>
+        <p className="mt-2 text-sm leading-6 text-roseMuted">“{testimonial.quote}”</p>
       </div>
-
-      <p className="relative z-10 mt-3 flex-1 text-sm leading-[1.6] text-roseMuted md:text-[15px]">{testimonial.testimonial}</p>
-      <p className="relative z-10 mt-3 text-[9px] font-black uppercase tracking-[0.16em] text-roseGold/75">
-        Creator Experience
-      </p>
     </article>
   );
 }
