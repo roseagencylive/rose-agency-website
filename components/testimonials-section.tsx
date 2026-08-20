@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { creatorTestimonials } from '@/lib/testimonials';
+import { creatorTestimonials, type CreatorTestimonial } from '@/lib/testimonials';
 
 type VideoTestimonial = {
   displayName?: string;
@@ -39,7 +39,7 @@ const videoTestimonials: VideoTestimonial[] = [
 export function TestimonialsSection() {
   const [activeVideo, setActiveVideo] = useState<VideoTestimonial | null>(null);
   const modalVideoRef = useRef<HTMLVideoElement>(null);
-  const savedWrittenTestimonialsCount = creatorTestimonials.length;
+  const writtenTestimonials = creatorTestimonials.filter((testimonial) => !testimonial.isPlaceholderForDevelopment);
 
   useEffect(() => {
     if (!activeVideo) return;
@@ -91,11 +91,20 @@ export function TestimonialsSection() {
         ))}
       </div>
 
-      <div className="mt-8 rounded-lg border border-roseGold/15 bg-roseCream/[0.025] px-5 py-5 text-center">
-        <p className="text-[10px] font-black uppercase tracking-[0.22em] text-roseGold">Written Creator Stories</p>
-        <p className="mx-auto mt-2 max-w-2xl text-sm leading-6 text-roseMuted">
-          Reserved for real written testimonials. {savedWrittenTestimonialsCount > 0 ? 'Approved written creator stories are preserved for this section.' : 'Real written stories will be added here.'}
-        </p>
+      <div className="mt-8">
+        <div className="mb-4 text-center">
+          <p className="text-[10px] font-black uppercase tracking-[0.22em] text-roseGold">Written Creator Stories</p>
+        </div>
+        <div
+          className={`rose-testimonial-scroll -mx-5 flex snap-x gap-4 overflow-x-auto px-5 pb-2 md:mx-0 md:gap-5 md:overflow-visible md:px-0 ${
+            writtenTestimonials.length === 1 ? 'md:grid md:grid-cols-[minmax(350px,380px)]' : 'md:grid md:grid-cols-3'
+          }`}
+          aria-label="Written creator stories"
+        >
+          {writtenTestimonials.map((testimonial, index) => (
+            <WrittenTestimonialCard key={testimonial.handle} testimonial={testimonial} index={index} />
+          ))}
+        </div>
       </div>
 
       {activeVideo?.videoSrc ? (
@@ -131,6 +140,95 @@ export function TestimonialsSection() {
         </div>
       ) : null}
     </section>
+  );
+}
+
+function WrittenTestimonialCard({ testimonial, index }: { testimonial: CreatorTestimonial; index: number }) {
+  const cardRef = useRef<HTMLElement>(null);
+  const [isVisible, setIsVisible] = useState(false);
+  const label = testimonial.category.replace(/\s*\+\s*/g, ' • ').toUpperCase();
+  const cardDelay = index * 175;
+  const initials = testimonial.name
+    .split(/\s|_/)
+    .filter(Boolean)
+    .map((part) => part[0])
+    .slice(0, 2)
+    .join('');
+
+  useEffect(() => {
+    const card = cardRef.current;
+    if (!card) return;
+
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReducedMotion) {
+      setIsVisible(true);
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.25 },
+    );
+
+    observer.observe(card);
+
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <article
+      ref={cardRef}
+      className={`relative flex min-w-[88%] snap-center flex-col overflow-hidden rounded-lg border border-roseGold/20 bg-[linear-gradient(145deg,rgba(58,8,19,0.34),rgba(7,5,5,0.96))] p-5 shadow-[0_14px_38px_rgba(0,0,0,0.2)] transition-all ease-out md:min-h-[310px] md:min-w-0 ${
+        isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
+      }`}
+      style={{ transitionDelay: `${cardDelay}ms`, transitionDuration: '850ms' }}
+    >
+      <div className="pointer-events-none absolute right-5 top-3 font-editorial text-6xl leading-none text-roseGold/10">“</div>
+      <div className="relative z-10 flex gap-1 text-[13px] leading-none text-roseGold" aria-label="Five star testimonial rating">
+        {[0, 1, 2, 3, 4].map((starIndex) => (
+          <span
+            key={starIndex}
+            className={`inline-block transition-all ease-out ${isVisible ? 'scale-100 opacity-100' : 'scale-95 opacity-0'}`}
+            style={{ transitionDelay: `${cardDelay + 260 + starIndex * 60}ms`, transitionDuration: '420ms' }}
+          >
+            ★
+          </span>
+        ))}
+      </div>
+      <p
+        className={`relative z-10 mt-4 text-[15px] leading-[1.65] text-roseCream/92 transition-all ease-out ${
+          isVisible ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
+        }`}
+        style={{ transitionDelay: `${cardDelay + 380}ms`, transitionDuration: '850ms' }}
+      >
+        “{testimonial.testimonial}”
+      </p>
+      <div
+        className={`relative z-10 mt-5 flex items-center gap-3 border-t border-roseGold/12 pt-4 transition-all ease-out md:mt-auto ${
+          isVisible ? 'translate-y-0 opacity-100' : 'translate-y-2 opacity-0'
+        }`}
+        style={{ transitionDelay: `${cardDelay + 680}ms`, transitionDuration: '700ms' }}
+      >
+        <div className="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-full border border-roseGold/45 bg-[radial-gradient(circle_at_35%_25%,rgba(216,182,106,0.22),rgba(58,8,19,0.88))] text-xs font-black text-roseGold shadow-[0_0_0_3px_rgba(93,12,31,0.32)]">
+          {testimonial.avatar ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={testimonial.avatar} alt={`${testimonial.name} profile`} className="h-full w-full object-cover object-center" />
+          ) : (
+            initials
+          )}
+        </div>
+        <div className="min-w-0">
+          <h3 className="truncate text-sm font-black leading-tight text-roseCream">{testimonial.name}</h3>
+          <p className="truncate text-xs font-black text-roseGoldSoft">{testimonial.handle}</p>
+          <p className="mt-1 truncate text-[9px] font-black uppercase tracking-[0.14em] text-roseMuted">{label}</p>
+        </div>
+      </div>
+    </article>
   );
 }
 
