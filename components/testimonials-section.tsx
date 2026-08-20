@@ -38,8 +38,27 @@ const videoTestimonials: VideoTestimonial[] = [
 
 export function TestimonialsSection() {
   const [activeVideo, setActiveVideo] = useState<VideoTestimonial | null>(null);
+  const [writtenRailIndex, setWrittenRailIndex] = useState(0);
+  const [hasInteractedWithWrittenRail, setHasInteractedWithWrittenRail] = useState(false);
   const modalVideoRef = useRef<HTMLVideoElement>(null);
+  const writtenRailRef = useRef<HTMLDivElement>(null);
   const writtenTestimonials = creatorTestimonials.filter((testimonial) => !testimonial.isPlaceholderForDevelopment);
+
+  function updateWrittenRailIndex() {
+    const rail = writtenRailRef.current;
+    const firstCard = rail?.children[0] as HTMLElement | undefined;
+    if (!rail || !firstCard) return;
+
+    const gap = Number.parseFloat(window.getComputedStyle(rail).columnGap || '0');
+    const cardWidth = firstCard.getBoundingClientRect().width + gap;
+    if (!cardWidth) return;
+
+    setWrittenRailIndex(Math.min(writtenTestimonials.length - 1, Math.max(0, Math.round(rail.scrollLeft / cardWidth))));
+  }
+
+  function noteWrittenRailInteraction() {
+    setHasInteractedWithWrittenRail(true);
+  }
 
   useEffect(() => {
     if (!activeVideo) return;
@@ -96,6 +115,11 @@ export function TestimonialsSection() {
           <p className="text-[10px] font-black uppercase tracking-[0.22em] text-roseGold">Written Creator Stories</p>
         </div>
         <div
+          ref={writtenRailRef}
+          onScroll={updateWrittenRailIndex}
+          onPointerDown={noteWrittenRailInteraction}
+          onTouchStart={noteWrittenRailInteraction}
+          onWheel={noteWrittenRailInteraction}
           className={`rose-testimonial-scroll -mx-5 flex snap-x gap-4 overflow-x-auto px-5 pb-2 md:mx-0 md:gap-5 md:overflow-visible md:px-0 ${
             writtenTestimonials.length === 1 ? 'md:grid md:grid-cols-[minmax(350px,380px)]' : 'md:grid md:grid-cols-3'
           }`}
@@ -105,6 +129,22 @@ export function TestimonialsSection() {
             <WrittenTestimonialCard key={testimonial.handle} testimonial={testimonial} index={index} />
           ))}
         </div>
+        {writtenTestimonials.length > 1 ? (
+          <div className="mt-3 flex items-center justify-between gap-4 md:hidden">
+            <p className="text-[10px] font-black uppercase tracking-[0.18em] text-roseGoldSoft/90">
+              Swipe to see more{' '}
+              <span
+                className={`inline-block ${hasInteractedWithWrittenRail ? '' : 'rose-written-swipe-cue'}`}
+                aria-hidden="true"
+              >
+                →
+              </span>
+            </p>
+            <p className="text-[10px] font-black tabular-nums tracking-[0.18em] text-roseMuted">
+              {String(writtenRailIndex + 1).padStart(2, '0')} / {String(writtenTestimonials.length).padStart(2, '0')}
+            </p>
+          </div>
+        ) : null}
       </div>
 
       {activeVideo?.videoSrc ? (
@@ -139,6 +179,28 @@ export function TestimonialsSection() {
           </div>
         </div>
       ) : null}
+      <style jsx>{`
+        @keyframes roseWrittenSwipeCue {
+          0%,
+          68%,
+          100% {
+            transform: translateX(0);
+          }
+          34% {
+            transform: translateX(7px);
+          }
+        }
+
+        .rose-written-swipe-cue {
+          animation: roseWrittenSwipeCue 2.6s ease-in-out infinite;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          .rose-written-swipe-cue {
+            animation: none;
+          }
+        }
+      `}</style>
     </section>
   );
 }
@@ -183,7 +245,7 @@ function WrittenTestimonialCard({ testimonial, index }: { testimonial: CreatorTe
   return (
     <article
       ref={cardRef}
-      className={`relative flex min-w-[88%] snap-center flex-col overflow-hidden rounded-lg border border-roseGold/20 bg-[linear-gradient(145deg,rgba(58,8,19,0.34),rgba(7,5,5,0.96))] p-5 shadow-[0_14px_38px_rgba(0,0,0,0.2)] transition-all ease-out md:min-h-[310px] md:min-w-0 ${
+      className={`relative flex min-w-[84%] snap-center flex-col overflow-hidden rounded-lg border border-roseGold/20 bg-[linear-gradient(145deg,rgba(58,8,19,0.34),rgba(7,5,5,0.96))] p-5 shadow-[0_14px_38px_rgba(0,0,0,0.2)] transition-all ease-out md:min-h-[310px] md:min-w-0 ${
         isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
       }`}
       style={{ transitionDelay: `${cardDelay}ms`, transitionDuration: '850ms' }}
