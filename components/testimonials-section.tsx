@@ -22,9 +22,12 @@ const videoTestimonials: VideoTestimonial[] = [
     posterSrc: '/images/kola-g-testimonial-poster.png',
   },
   {
-    handle: '@creator_coming_soon',
-    quote: 'Real creator video testimonial placeholder.',
-    duration: '0:00',
+    displayName: 'Amanda Storytelling Author',
+    handle: '@enchanted.quill.c',
+    quote: 'CREATOR STORY',
+    duration: '0:36',
+    videoSrc: '/videos/amanda-storytelling-author-testimonial.mp4',
+    posterSrc: '/images/amanda-storytelling-author-testimonial-poster.png',
   },
   {
     handle: '@creator_coming_soon',
