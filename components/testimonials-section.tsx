@@ -30,9 +30,12 @@ const videoTestimonials: VideoTestimonial[] = [
     posterSrc: '/images/amanda-storytelling-author-testimonial-poster.png',
   },
   {
-    handle: '@creator_coming_soon',
-    quote: 'Real creator video testimonial placeholder.',
-    duration: '0:00',
+    displayName: 'ResilientTerrie',
+    handle: '@buildresilience',
+    quote: 'CREATOR STORY',
+    duration: '1:00',
+    videoSrc: '/videos/resilientterrie-testimonial.mp4',
+    posterSrc: '/images/resilientterrie-testimonial-poster.png',
   },
 ];
 
