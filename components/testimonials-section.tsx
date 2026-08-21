@@ -37,30 +37,74 @@ const videoTestimonials: VideoTestimonial[] = [
     videoSrc: '/videos/resilientterrie-testimonial.mp4',
     posterSrc: '/images/resilientterrie-testimonial-poster.png',
   },
+  {
+    displayName: 'Tia | Homeschool Mom Baddie',
+    handle: '@homeschoolmombaddie',
+    quote: 'CREATOR STORY',
+    duration: '0:25',
+    videoSrc: '/videos/tia-homeschool-mom-baddie-testimonial.mp4',
+    posterSrc: '/images/tia-homeschool-mom-baddie-testimonial-poster.png',
+  },
+  {
+    displayName: 'anonymity_talks',
+    handle: '@anonymity_talks',
+    quote: 'CREATOR STORY',
+    duration: '0:17',
+    videoSrc: '/videos/anonymity-talks-testimonial.mp4',
+    posterSrc: '/images/anonymity-talks-testimonial-poster.png',
+  },
 ];
 
 export function TestimonialsSection() {
   const [activeVideo, setActiveVideo] = useState<VideoTestimonial | null>(null);
+  const [videoRailIndex, setVideoRailIndex] = useState(0);
+  const [hasInteractedWithVideoRail, setHasInteractedWithVideoRail] = useState(false);
   const [writtenRailIndex, setWrittenRailIndex] = useState(0);
   const [hasInteractedWithWrittenRail, setHasInteractedWithWrittenRail] = useState(false);
   const modalVideoRef = useRef<HTMLVideoElement>(null);
+  const videoRailRef = useRef<HTMLDivElement>(null);
   const writtenRailRef = useRef<HTMLDivElement>(null);
   const writtenTestimonials = creatorTestimonials.filter((testimonial) => !testimonial.isPlaceholderForDevelopment);
 
-  function updateWrittenRailIndex() {
-    const rail = writtenRailRef.current;
-    const firstCard = rail?.children[0] as HTMLElement | undefined;
-    if (!rail || !firstCard) return;
+  function getRailIndex(rail: HTMLDivElement, itemCount: number) {
+    const firstCard = rail.children[0] as HTMLElement | undefined;
+    if (!firstCard) return 0;
 
     const gap = Number.parseFloat(window.getComputedStyle(rail).columnGap || '0');
     const cardWidth = firstCard.getBoundingClientRect().width + gap;
-    if (!cardWidth) return;
+    if (!cardWidth) return 0;
 
-    setWrittenRailIndex(Math.min(writtenTestimonials.length - 1, Math.max(0, Math.round(rail.scrollLeft / cardWidth))));
+    return Math.min(itemCount - 1, Math.max(0, Math.round(rail.scrollLeft / cardWidth)));
+  }
+
+  function updateVideoRailIndex() {
+    const rail = videoRailRef.current;
+    if (!rail) return;
+    setVideoRailIndex(getRailIndex(rail, videoTestimonials.length));
+  }
+
+  function updateWrittenRailIndex() {
+    const rail = writtenRailRef.current;
+    if (!rail) return;
+    setWrittenRailIndex(getRailIndex(rail, writtenTestimonials.length));
+  }
+
+  function noteVideoRailInteraction() {
+    setHasInteractedWithVideoRail(true);
   }
 
   function noteWrittenRailInteraction() {
     setHasInteractedWithWrittenRail(true);
+  }
+
+  function scrollVideoRail(direction: -1 | 1) {
+    const rail = videoRailRef.current;
+    const firstCard = rail?.children[0] as HTMLElement | undefined;
+    if (!rail || !firstCard) return;
+
+    const gap = Number.parseFloat(window.getComputedStyle(rail).columnGap || '0');
+    rail.scrollBy({ left: direction * (firstCard.getBoundingClientRect().width + gap), behavior: 'smooth' });
+    noteVideoRailInteraction();
   }
 
   useEffect(() => {
@@ -96,8 +140,13 @@ export function TestimonialsSection() {
       </div>
 
       <div
-        className="rose-testimonial-scroll -mx-5 mt-8 flex snap-x gap-4 overflow-x-auto px-5 pb-3 md:mx-0 md:grid md:grid-cols-3 md:overflow-visible md:px-0 md:pb-0"
-        aria-label="Video testimonial placeholders"
+        ref={videoRailRef}
+        onScroll={updateVideoRailIndex}
+        onPointerDown={noteVideoRailInteraction}
+        onTouchStart={noteVideoRailInteraction}
+        onWheel={noteVideoRailInteraction}
+        className="rose-testimonial-scroll -mx-5 mt-8 flex snap-x gap-4 overflow-x-auto px-5 pb-3 md:mx-0 md:gap-5 md:px-0 md:pb-1"
+        aria-label="Video testimonials"
       >
         {videoTestimonials.map((testimonial, index) => (
           <VideoTestimonialCard
@@ -111,6 +160,38 @@ export function TestimonialsSection() {
             }}
           />
         ))}
+      </div>
+      <div className="mt-3 flex items-center justify-between gap-4">
+        <p className="text-[10px] font-black uppercase tracking-[0.18em] text-roseGoldSoft/90 md:hidden">
+          Swipe to see more{' '}
+          <span className={`inline-block ${hasInteractedWithVideoRail ? '' : 'rose-testimonial-swipe-cue'}`} aria-hidden="true">
+            →
+          </span>
+        </p>
+        <p className="text-[10px] font-black tabular-nums tracking-[0.18em] text-roseMuted md:hidden">
+          {String(videoRailIndex + 1).padStart(2, '0')} / {String(videoTestimonials.length).padStart(2, '0')}
+        </p>
+        <div className="ml-auto hidden items-center gap-3 md:flex">
+          <button
+            type="button"
+            onClick={() => scrollVideoRail(-1)}
+            className="flex h-9 w-9 items-center justify-center rounded-full border border-roseGold/25 bg-roseBlack/35 text-sm font-black text-roseGold transition hover:border-roseGold/55 hover:bg-roseWine/45 focus-visible:ring-2 focus-visible:ring-roseGold"
+            aria-label="Previous creator video"
+          >
+            ←
+          </button>
+          <p className="text-[10px] font-black tabular-nums tracking-[0.18em] text-roseMuted">
+            {String(videoRailIndex + 1).padStart(2, '0')} / {String(videoTestimonials.length).padStart(2, '0')}
+          </p>
+          <button
+            type="button"
+            onClick={() => scrollVideoRail(1)}
+            className="flex h-9 w-9 items-center justify-center rounded-full border border-roseGold/25 bg-roseBlack/35 text-sm font-black text-roseGold transition hover:border-roseGold/55 hover:bg-roseWine/45 focus-visible:ring-2 focus-visible:ring-roseGold"
+            aria-label="Next creator video"
+          >
+            →
+          </button>
+        </div>
       </div>
 
       <div className="mt-8">
@@ -183,7 +264,7 @@ export function TestimonialsSection() {
         </div>
       ) : null}
       <style jsx>{`
-        @keyframes roseWrittenSwipeCue {
+        @keyframes roseTestimonialSwipeCue {
           0%,
           68%,
           100% {
@@ -194,11 +275,16 @@ export function TestimonialsSection() {
           }
         }
 
+        .rose-testimonial-swipe-cue {
+          animation: roseTestimonialSwipeCue 2.6s ease-in-out infinite;
+        }
+
         .rose-written-swipe-cue {
-          animation: roseWrittenSwipeCue 2.6s ease-in-out infinite;
+          animation: roseTestimonialSwipeCue 2.6s ease-in-out infinite;
         }
 
         @media (prefers-reduced-motion: reduce) {
+          .rose-testimonial-swipe-cue,
           .rose-written-swipe-cue {
             animation: none;
           }
@@ -309,7 +395,7 @@ function VideoTestimonialCard({
   const hasVideo = Boolean(testimonial.videoSrc);
 
   return (
-    <article className="min-w-[86%] snap-center md:min-w-0">
+    <article className="min-w-[84%] snap-center md:min-w-[calc((100%_-_40px)/3)] md:shrink-0">
       <button
         type="button"
         onClick={onOpen}
